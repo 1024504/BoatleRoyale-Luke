@@ -78,21 +78,26 @@ public class Buoyancy : MonoBehaviour
 
 		_handle = _job.Schedule(totalVerts, 512);
 
-		_handle.Complete();
-
-		for (var i = 0; i < totalVerts; i++)
-		{
-			if (_forceAmounts[i] == Vector3.zero) continue;
-			rb.AddForceAtPosition(_forceAmounts[i],_worldVertPositions[i], ForceMode.Force);
-			underwaterVerts++;
-		}
 		
-		var drag = underwaterVerts * dragFactor;
-		rb.drag = drag;
-		rb.angularDrag = drag;
 	}
 
-	private void OnDestroy()
+    private void LateUpdate()
+    {
+        _handle.Complete();
+
+        for (var i = 0; i < totalVerts; i++)
+        {
+            if (_forceAmounts[i] == Vector3.zero) continue;
+            rb.AddForceAtPosition(_forceAmounts[i],_worldVertPositions[i], ForceMode.Force);
+            underwaterVerts++;
+        }
+		
+        var drag = underwaterVerts * dragFactor;
+        rb.drag = drag;
+        rb.angularDrag = drag;
+    }
+
+    private void OnDestroy()
 	{
 		Vertices.Dispose();
 		MeshVertForceFactor.Dispose();
